@@ -68,8 +68,8 @@ const images = [
 const boxElement = document.querySelector('.gallery');
 
 
-function listTemplate(obj) {
-    const { preview, original, description} = obj;
+function listTemplate({ preview, original, description}) {
+    // const { preview, original, description} = obj;
     return `<li class="gallery-item">
     <a class="gallery-link" href="${original}">
     <img
@@ -84,6 +84,37 @@ function listTemplate(obj) {
 
 const markup = images.map(listTemplate).join('');
 boxElement.innerHTML = markup;
+
+boxElement.addEventListener('click', e => {
+  e.preventDefault();
+  if (e.target == e.currentTarget) {
+    return;
+  };
+  const imageUrl = e.target.dataset.source;
+
+  const instance = basicLightbox.create(`
+    <img src='${imageUrl}' width="1112" height="640">
+    `,
+    {
+      onShow: (instance) => {
+        document.addEventListener('keydown', onKeyModal)
+      },
+  
+      onClose: (instance) => {
+        document.removeEventListener('keydown', onKeyModal)
+      }
+    });
+  
+  function onKeyModal(e) {
+    if (e.key === 'Escape') {
+      instance.close();
+    }
+  }
+
+instance.show()
+});
+
+
 
 
 
